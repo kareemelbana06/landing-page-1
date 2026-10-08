@@ -17,9 +17,14 @@ import {
   Wallet,
 } from "lucide-react";
 
-import bikeImage from "@/assets/delivery-bike.jpg";
-import carImage from "@/assets/delivery-car.jpg";
 import { supabase } from "@/lib/supabase";
+
+const defaultBikeImage = supabase.storage
+  .from("landing-images")
+  .getPublicUrl("landing-1/delivery-bike.jpg").data.publicUrl;
+const defaultCarImage = supabase.storage
+  .from("landing-images")
+  .getPublicUrl("landing-1/delivery-car.jpg").data.publicUrl;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -206,6 +211,8 @@ type LandingCustomization = {
   heroTitle?: string;
   heroDescription?: string;
   heroButtonText?: string;
+  bikeImage?: string;
+  carImage?: string;
   showImage?: boolean;
   showCTA?: boolean;
 };
@@ -223,6 +230,8 @@ function normalizeCustomization(value: unknown): LandingCustomization {
     "heroTitle",
     "heroDescription",
     "heroButtonText",
+    "bikeImage",
+    "carImage",
   ] as const;
 
   for (const field of stringFields) {
@@ -520,13 +529,13 @@ function Index() {
             <Reveal className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 sm:gap-5">
               {[
                 {
-                  src: bikeImage,
+                  src: customization.bikeImage ?? defaultBikeImage,
                   alt: "Courier riding an e-bike with a delivery box through a city street at dusk",
                   label: "On a bike",
                   note: "No car needed in most cities",
                 },
                 {
-                  src: carImage,
+                  src: customization.carImage ?? defaultCarImage,
                   alt: "Driver in a car at night with a phone showing navigation on the dashboard",
                   label: "In a car",
                   note: "Longer trips, bigger orders",
